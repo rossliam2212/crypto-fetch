@@ -1,0 +1,8 @@
+.idea/
+
+/build
+.clang-format
+README.md
+
+api_key.txt
+
