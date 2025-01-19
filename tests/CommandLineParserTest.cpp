@@ -1,6 +1,6 @@
 /**
  * @file CommandLineParserTest.cpp
- * @author liam 
+ * @author liam
  * @date 18/01/2025
  */
 
@@ -8,7 +8,6 @@
 #include <catch2/matchers/catch_matchers.hpp>
 
 #include "CommandLineParser.hpp"
-#include "catch2/matchers/catch_matchers_contains.hpp"
 
 TEST_CASE("commandLineParser_singleTickerDefaultCurrency_parsesOptionsCorrectly",
           "[unit][command-line-parser][option-parsing]") {
