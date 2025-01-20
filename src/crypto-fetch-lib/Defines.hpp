@@ -17,6 +17,8 @@ const std::string CMD_CURRENCY{"currency"};
 const std::string CMD_HELP{"help"};
 const std::string CMD_VERSION{"version"};
 const std::string CMD_VERBOSE{"verbose"};
+const std::string CMD_API_KEY_SET{"set-apikey"};
+const std::string CMD_API_KEY_GET{"get-apikey"};
 
 constexpr std::string_view EUR_CODE{"EUR"};
 constexpr std::string_view GBP_CODE{"GBP"};
