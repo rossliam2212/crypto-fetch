@@ -48,11 +48,20 @@ void CommandLineParser::parse(int argc, char** argv) {
 }
 
 std::vector<std::string> CommandLineParser::getTickers() const {
-    return result[CMD_TICKER].as<std::vector<std::string>>();
+    auto tickers = result[CMD_TICKER].as<std::vector<std::string>>();
+    for (auto& ticker : tickers) {
+        std::transform(std::begin(ticker), std::end(ticker), std::begin(ticker),
+            [](const char c) { return toupper(c); });
+    }
+    return tickers;
 }
 
 std::string CommandLineParser::getCurrency() const {
-    return result[CMD_CURRENCY].as<std::string>();
+    auto currency = result[CMD_CURRENCY].as<std::string>();
+    std::transform(currency.begin(), currency.end(), currency.begin(),
+        [](const char c) { return toupper(c); });
+
+    return currency;
 }
 
 bool CommandLineParser::isVerbose() const {

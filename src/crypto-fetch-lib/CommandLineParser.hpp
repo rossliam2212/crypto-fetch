@@ -11,6 +11,7 @@
 #include <fmt/core.h>
 #include <fstream>
 #include <filesystem>
+#include <algorithm>
 
 #include "config.hpp"
 #include "Defines.hpp"
