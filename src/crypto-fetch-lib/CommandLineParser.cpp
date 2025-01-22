@@ -58,7 +58,7 @@ std::vector<std::string> CommandLineParser::getTickers() const {
 
 std::string CommandLineParser::getCurrency() const {
     auto currency = result[CMD_CURRENCY].as<std::string>();
-    std::transform(currency.begin(), currency.end(), currency.begin(),
+    std::transform(std::begin(currency), std::end(currency), std::begin(currency),
         [](const char c) { return toupper(c); });
 
     return currency;
