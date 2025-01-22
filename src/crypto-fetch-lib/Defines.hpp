@@ -8,9 +8,11 @@
 #define DEFINES_HPP
 
 #include <string>
+#include <string_view>
 
-inline const char* API_KEY_ENVIRONMENT_VAR = "COINMARKETCAP_API_KEY";
-const std::string FALLBACK_API_KEY_LOCATION{"../api_key.txt"};
+constexpr char HOME_ENV_VAR[]{"HOME"};
+const std::string API_KEY_ROOT{"/.config/crypto-fetch/"};
+const std::string API_KEY{"coinmarketcap_api_key.txt"};
 
 const std::string CMD_TICKER{"ticker"};
 const std::string CMD_CURRENCY{"currency"};
@@ -40,8 +42,8 @@ const std::string API_LATEST_ENDPOINT{"/v1/cryptocurrency/quotes/latest"};
 const std::string API_SYMBOL_ARG{"?symbol="};
 const std::string API_CONVERT_ARG{"&convert="};
 
-constexpr char HEADER_API_KEY[] = "X-CMC_PRO_API_KEY";
-constexpr char HEADER_ACCEPT[] = "Accept: application/json";
+constexpr char HEADER_API_KEY[]{"X-CMC_PRO_API_KEY"};
+constexpr char HEADER_ACCEPT[]{"Accept: application/json"};
 
 
 #endif //DEFINES_HPP

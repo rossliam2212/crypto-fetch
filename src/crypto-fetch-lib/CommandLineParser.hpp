@@ -9,11 +9,13 @@
 
 #include <cxxopts.hpp>
 #include <fmt/core.h>
-#include <spdlog/spdlog.h>
 #include <fstream>
+#include <filesystem>
 
 #include "config.hpp"
 #include "Defines.hpp"
+
+namespace fs = std::filesystem;
 
 class CommandLineParser {
 public:
@@ -29,11 +31,17 @@ private:
     cxxopts::Options options;
     cxxopts::ParseResult result;
 
-    void handleVersion();
-    void handleGetApiKey();
+    std::string getSuppliedApiKey() const;
     void handleSetApiKey();
-    std::string getApiKeyPath() const;
-    bool setApiKeyEnvVar(const std::string& suppliedPath);
+
+    static void handleVersion();
+    static void handleGetApiKey();
+    static bool checkApiKeyFile();
+    static bool fileExists(std::string_view path);
+    static bool rootDirExists();
+    static void createRootDir();
+    static void writeApiKeyToFile(const std::string& path, const std::string& apiKey);
+    static std::string getFullApiKeyFilePath();
 };
 
 #endif //COMMANDLINEPARSER_HPP

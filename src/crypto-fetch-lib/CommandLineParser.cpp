@@ -14,8 +14,8 @@ CommandLineParser::CommandLineParser()
         ("v,verbose", "Print verbose output", cxxopts::value<bool>()->default_value("false"))
         ("version", "Print version information")
         ("help", "Print usage information")
-        ("set-apikey", "Set coinmarketcap api key file path", cxxopts::value<std::string>())
-        ("get-apikey", "Get coinmarketcap api key file path if set");
+        ("set-apikey", "Set coinmarketcap api key", cxxopts::value<std::string>())
+        ("get-apikey", "Get location of coinmarketcap api key if set");
 }
 
 void CommandLineParser::parse(int argc, char** argv) {
@@ -59,7 +59,7 @@ bool CommandLineParser::isVerbose() const {
     return result.count(CMD_VERBOSE);
 }
 
-std::string CommandLineParser::getApiKeyPath() const {
+std::string CommandLineParser::getSuppliedApiKey() const {
     return result[CMD_API_KEY_SET].as<std::string>();
 }
 
@@ -69,48 +69,58 @@ void CommandLineParser::handleVersion() {
 }
 
 void CommandLineParser::handleGetApiKey() {
-    if (const char* path = std::getenv(API_KEY_ENVIRONMENT_VAR)) {
-        spdlog::info("API key path: '{}'", path);
-    } else {
-        spdlog::warn("API key path not set. See: --set-apikey");
+    if (checkApiKeyFile()) {
+        fmt::println("[INFO] API key located in file - '{}'", getFullApiKeyFilePath());
+        std::exit(EXIT_SUCCESS);
     }
+    fmt::println("[WARN] API key not set. See: --set-apikey");
     std::exit(EXIT_SUCCESS);
 }
-
 
 void CommandLineParser::handleSetApiKey() {
-    const std::string suppliedPath = getApiKeyPath();
-
-    if (const char* path = std::getenv(API_KEY_ENVIRONMENT_VAR)) {
-        if (path == suppliedPath) {
-            fmt::println("API key path already set. Path: '{}'", path);
-        } else {
-            if (setApiKeyEnvVar(suppliedPath)) {
-                spdlog::info("New API key path written to ~/.bashrc. New path: '{}'", suppliedPath);
-            } else {
-                spdlog::error("Failed to write API key path to ~/.bashrc");
-                std::exit(EXIT_FAILURE);
-            }
-        }
-    } else {
-        if (setApiKeyEnvVar(suppliedPath)) {
-            spdlog::info("API key path written to ~/.bashrc. New path: '{}'", suppliedPath);
-        } else {
-            spdlog::error("Failed to write API key path to ~/.bashrc");
-            std::exit(EXIT_FAILURE);
-        }
+    const std::string apiKeyFilePath = getFullApiKeyFilePath();
+    if (checkApiKeyFile()) {
+        fmt::println("[INFO] API key already set in file - '{}'", apiKeyFilePath);
+        std::exit(EXIT_SUCCESS);
     }
+
+    if (rootDirExists()) {
+        writeApiKeyToFile(apiKeyFilePath, getSuppliedApiKey());
+        std::exit(EXIT_SUCCESS);
+    }
+    createRootDir();
+    writeApiKeyToFile(apiKeyFilePath, getSuppliedApiKey());
     std::exit(EXIT_SUCCESS);
 }
 
-bool CommandLineParser::setApiKeyEnvVar(const std::string& suppliedPath) {
-    std::ofstream bashrc;
-    bashrc.open(std::getenv("HOME") + std::string("/.bashrc"), std::ios::app);
+bool CommandLineParser::checkApiKeyFile() {
+    const std::string fallbackFilePath = getFullApiKeyFilePath();
+    return fileExists(fallbackFilePath);
+}
 
-    if (bashrc.is_open()) {
-        bashrc << "export " << API_KEY_ENVIRONMENT_VAR << "=" << suppliedPath << std::endl;
-        bashrc.close();
-        return true;
+bool CommandLineParser::rootDirExists() {
+    const std::string rootDir = fmt::format("{}{}", getenv("HOME"), API_KEY_ROOT);
+    return fs::exists(rootDir) && fs::is_directory(rootDir);
+}
+
+bool CommandLineParser::fileExists(const std::string_view path) {
+    return fs::exists(path);
+}
+
+void CommandLineParser::createRootDir() {
+    const std::string rootDir = fmt::format("{}{}", getenv("HOME"), API_KEY_ROOT);
+    fs::create_directories(rootDir);
+}
+
+void CommandLineParser::writeApiKeyToFile(const std::string& path, const std::string& apiKey) {
+    std::ofstream out{path, std::fstream::out};
+    if (out.is_open()) {
+        out << apiKey << std::endl;
+        fmt::println("[INFO] API key successfully written to - '{}'", path);
     }
-    return false;
+    out.close();
+}
+
+std::string CommandLineParser::getFullApiKeyFilePath() {
+    return fmt::format("{}{}{}", getenv("HOME"), API_KEY_ROOT, API_KEY);
 }

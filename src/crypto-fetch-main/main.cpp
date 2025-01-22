@@ -1,26 +1,18 @@
 #include "ApiClient.hpp"
 #include "Formatter.hpp"
 
-std::string getApiKeyPath() {
-    if (const char* path = std::getenv(API_KEY_ENVIRONMENT_VAR)) {
-        return fmt::to_string(path);
-    }
-    throw std::runtime_error("API key not set. See: --set-apikey");
-}
-
 std::string loadApiKey() {
-    const std::string path = getApiKeyPath();
-    std::ifstream ifs(path, std::ios::in);
-
+    const auto apiKeyFilePath = std::string{getenv(HOME_ENV_VAR) + API_KEY_ROOT + API_KEY};
+    std::ifstream ifs{apiKeyFilePath, std::fstream::in};
     if (!ifs.is_open()) {
-        throw std::runtime_error(fmt::format("Failed to open api key file '{}'", path));
+        throw std::runtime_error(fmt::format("Config file does not exist. See --set-apikey"));
     }
     std::string apiKey;
     std::getline(ifs, apiKey);
-
     if (apiKey.empty()) {
-        throw std::runtime_error(fmt::format("Failed to read api key from file '{}'", path));
+       throw std::runtime_error(fmt::format("Failed to read api key from file - {}", apiKeyFilePath));
     }
+
     ifs.close();
     return apiKey;
 }
@@ -36,6 +28,6 @@ int main(int argc, char** argv) {
         const auto response = client.fetchLatestPrice(parser);
         Formatter::display(response);
     } catch (const std::exception& ex) {
-        spdlog::error("Failed to fetch price. Cause: '{}'.", ex.what());
+        fmt::println("[ERROR] Failed to fetch price. Cause: '{}'.", ex.what());
     }
 }
