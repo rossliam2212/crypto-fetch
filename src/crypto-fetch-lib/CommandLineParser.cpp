@@ -108,7 +108,7 @@ bool CommandLineParser::checkApiKeyFile() {
 }
 
 bool CommandLineParser::rootDirExists() {
-    const std::string rootDir = fmt::format("{}{}", getenv("HOME"), API_KEY_ROOT);
+    const std::string rootDir = fmt::format("{}{}", getenv(HOME_ENV_VAR), API_KEY_ROOT);
     return fs::exists(rootDir) && fs::is_directory(rootDir);
 }
 
@@ -117,7 +117,7 @@ bool CommandLineParser::fileExists(const std::string_view path) {
 }
 
 void CommandLineParser::createRootDir() {
-    const std::string rootDir = fmt::format("{}{}", getenv("HOME"), API_KEY_ROOT);
+    const std::string rootDir = fmt::format("{}{}", getenv(HOME_ENV_VAR), API_KEY_ROOT);
     fs::create_directories(rootDir);
 }
 
@@ -126,8 +126,10 @@ void CommandLineParser::writeApiKeyToFile(const std::string& path, const std::st
     if (out.is_open()) {
         out << apiKey << std::endl;
         fmt::println("[INFO] API key successfully written to - '{}'", path);
+        out.close();
+    } else {
+        throw std::runtime_error(fmt::format("Failed to write API key to file - '{}'", path));
     }
-    out.close();
 }
 
 std::string CommandLineParser::getFullApiKeyFilePath() {
