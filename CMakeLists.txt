@@ -20,8 +20,15 @@ set(CMAKE_CXX_EXTENSIONS        OFF)
 set(CMAKE_BUILD_TYPE            Debug)
 set(CMAKE_MODULE_PATH           ${PROJECT_SOURCE_DIR}/cmake/)
 
+option(ENABLE_WARNINGS           "Enable warnings"             ON)
+option(ENABLE_WARNINGS_AS_ERRORS "Enable a unit testing build" OFF)
+
 include(Dependencies)
 setup_dependencies()
+
+if (ENABLE_WARNINGS)
+	include(Warnings)
+endif()
 
 add_subdirectory(configured)
 add_subdirectory(src)
