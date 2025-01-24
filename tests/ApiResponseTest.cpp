@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-#include "ApiResponse.hpp"
+#include <cf/ApiResponse.hpp>
 
 TEST_CASE("apiResponse_constructedFromJson_singleCrypto_defaultCurrency", "[unit][api-response][json-parsing][single-crypto]") {
     auto mockResponse = R"({
@@ -23,18 +23,18 @@ TEST_CASE("apiResponse_constructedFromJson_singleCrypto_defaultCurrency", "[unit
         }
     })"_json;
 
-    CommandLineParser mockParser;
+    cf::CommandLineParser mockParser;
     char arg1[] = "crypto-fetch";
     char arg2[] = "-t";
     char arg3[] = "XRP";
     char* mockArgs[] = {arg1, arg2, arg3};
     mockParser.parse(3, mockArgs);
 
-    ApiResponse response{mockParser, mockResponse};
-    const std::vector<ResponseData> responseData = response.getResponses();
+    cf::ApiResponse response{mockParser, mockResponse};
+    const std::vector<cf::ResponseData> responseData = response.getResponses();
     REQUIRE(responseData.size() == 1);
 
-    ResponseData dataObject = responseData.at(0);
+    cf::ResponseData dataObject = responseData.at(0);
     REQUIRE(dataObject.ticker == "XRP");
     REQUIRE(dataObject.price == "2.5543");
     REQUIRE(dataObject.currency == "EUR");
@@ -60,15 +60,15 @@ TEST_CASE("apiResponse_constructedFromJson_multipleCryptos_defaultCurrency", "[u
         }
     })"_json;
 
-    CommandLineParser mockParser;
+    cf::CommandLineParser mockParser;
     char arg1[] = "crypto-fetch";
     char arg2[] = "-t";
     char arg3[] = "XRP,BTC";
     char* mockArgs[] = {arg1, arg2, arg3};
     mockParser.parse(3, mockArgs);
 
-    ApiResponse response{mockParser, mockResponse};
-    const std::vector<ResponseData> responseData = response.getResponses();
+    cf::ApiResponse response{mockParser, mockResponse};
+    const std::vector<cf::ResponseData> responseData = response.getResponses();
     REQUIRE(responseData.size() == 2);
 
     REQUIRE(responseData.at(0).ticker == "XRP");
@@ -95,15 +95,15 @@ TEST_CASE("apiResponse_constructedFromJson_multipleCryptos_defaultCurrency_verbo
         }
     })"_json;
 
-    CommandLineParser mockParser;
+    cf::CommandLineParser mockParser;
     char arg1[] = "crypto-fetch";
     char arg2[] = "-vt";
     char arg3[] = "XRP";
     char* mockArgs[] = {arg1, arg2, arg3};
     mockParser.parse(3, mockArgs);
 
-    ApiResponse response{mockParser, mockResponse};
-    const std::vector<ResponseData> responseData = response.getResponses();
+    cf::ApiResponse response{mockParser, mockResponse};
+    const std::vector<cf::ResponseData> responseData = response.getResponses();
     REQUIRE(responseData.size() == 1);
     REQUIRE(response.isVerbose() == true);
 

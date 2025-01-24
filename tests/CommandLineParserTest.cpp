@@ -7,7 +7,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers.hpp>
 
-#include "CommandLineParser.hpp"
+#include <cf/CommandLineParser.hpp>
 
 TEST_CASE("commandLineParser_singleTickerDefaultCurrency_parsesOptionsCorrectly",
           "[unit][command-line-parser][option-parsing]") {
@@ -16,7 +16,7 @@ TEST_CASE("commandLineParser_singleTickerDefaultCurrency_parsesOptionsCorrectly"
     char arg3[] = "XRP";
     char* mockArgs[] = {arg1, arg2, arg3};
 
-    CommandLineParser parser;
+    cf::CommandLineParser parser;
     parser.parse(3, mockArgs);
 
     REQUIRE(parser.getTickers().size() == 1);
@@ -30,7 +30,7 @@ TEST_CASE("commandLineParser_multipleTickersDefaultCurrency_parsesOptionsCorrect
     char arg3[] = "XRP,BTC,XLM";
     char* mockArgs[] = {arg1, arg2, arg3};
 
-    CommandLineParser parser;
+    cf::CommandLineParser parser;
     parser.parse(3, mockArgs);
 
     REQUIRE(parser.getTickers().size() == 3);
@@ -49,7 +49,7 @@ TEST_CASE("commandLineParser_singleTickerSpecifiedCurrencyVerbose_parsesOptionsC
     char arg5[] = "USD";
     char* mockArgs[] = {arg1, arg2, arg3, arg4, arg5};
 
-    CommandLineParser parser;
+    cf::CommandLineParser parser;
     parser.parse(5, mockArgs);
 
     REQUIRE(parser.getTickers().size() == 1);
@@ -65,7 +65,7 @@ TEST_CASE("commandLineParser_noTickerSpecified_exceptionThrown", "[unit][command
     char arg2[] = "XRP";
     char* mockArgs[] = {arg1, arg2};
 
-    CommandLineParser parser;
+    cf::CommandLineParser parser;
     REQUIRE_THROWS_AS(parser.parse(2, mockArgs), std::runtime_error);
     REQUIRE_THROWS_WITH(parser.parse(2, mockArgs), EXPECTED_MESSAGE);
 }
@@ -78,7 +78,7 @@ TEST_CASE("commandLineParser_invalidOptionSpecified_exceptionThrown", "[unit][co
     char arg3[] = "XRP";
     char* mockArgs[] = {arg1, arg2, arg3};
 
-    CommandLineParser parser;
+    cf::CommandLineParser parser;
     REQUIRE_THROWS_AS(parser.parse(2, mockArgs), std::runtime_error);
     REQUIRE_THROWS_WITH(parser.parse(2, mockArgs), EXPECTED_MESSAGE);
 }

@@ -1,8 +1,8 @@
 set(LIB_HEADERS
-    ApiClient.hpp
-    ApiResponse.hpp
-    CommandLineParser.hpp
-    Formatter.hpp
+    ../../include/cf/ApiClient.hpp
+	../../include/cf/ApiResponse.hpp
+	../../include/cf/CommandLineParser.hpp
+	../../include/cf/Formatter.hpp
 )
 
 set(LIB_SOURCES
@@ -14,6 +14,7 @@ set(LIB_SOURCES
 
 set(LIB_INCLUDES
 		./
+		../../include/
         ${CURLPP_INCLUDE_DIRS}
         ${CMAKE_BINARY_DIR}/configured_files/include
 )
