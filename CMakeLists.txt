@@ -26,6 +26,7 @@ option(ENABLE_WARNINGS_AS_ERRORS "Enable a unit testing build" OFF)
 include(Dependencies)
 setup_dependencies()
 
+include(Docs)
 if (ENABLE_WARNINGS)
 	include(Warnings)
 endif()
