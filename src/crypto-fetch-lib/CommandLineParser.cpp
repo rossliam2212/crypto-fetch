@@ -43,8 +43,10 @@ namespace cf {
             if (!result.count(CMD_TICKER)) {
                 throw std::runtime_error("Ticker option not specified");
             }
+        } catch (const ApiKeyException& ex) {
+            throw CryptoFetchException(fmt::format("API Key error - {}", ex.what()));
         } catch (const std::exception& ex) {
-            throw std::runtime_error(fmt::format("CMD parsing error - {}", ex.what()));
+            throw CryptoFetchException(fmt::format("CMD parsing error - {}", ex.what()));
         }
     }
 
@@ -82,7 +84,7 @@ namespace cf {
         const std::string apiKeyPath = getFullApiKeyFilePath();
 
         if (utils::fileExists(apiKeyPath)) {
-            fmt::println("[INFO] API key located in file - '{}'", getFullApiKeyFilePath());
+            fmt::println("[INFO] API key located in config file - '{}'", getFullApiKeyFilePath());
             std::exit(EXIT_SUCCESS);
         }
         fmt::println("[WARN] API key not set. See: --set-apikey");
@@ -93,7 +95,7 @@ namespace cf {
         const std::string apiKeyFilePath = getFullApiKeyFilePath();
 
         if (utils::fileExists(apiKeyFilePath)) {
-            fmt::println("[INFO] API key already set in file - '{}'", apiKeyFilePath);
+            fmt::println("[INFO] API key already set in config file - '{}'", apiKeyFilePath);
             std::exit(EXIT_SUCCESS);
         }
 
@@ -108,7 +110,7 @@ namespace cf {
             writeApiKeyToFile(apiKeyFilePath, suppliedApiKey);
             std::exit(EXIT_SUCCESS);
         }
-        throw std::runtime_error(fmt::format("Failed to create root directory - '{}'", rootDirectory));
+        throw ApiKeyException(fmt::format("Failed to create api key root directory - '{}'", rootDirectory));
     }
 
     void CommandLineParser::writeApiKeyToFile(const std::string& path, const std::string& apiKey) {
@@ -118,7 +120,7 @@ namespace cf {
             fmt::println("[INFO] API key successfully written to - '{}'", path);
             out.close();
         } else {
-            throw std::runtime_error(fmt::format("Failed to write API key to file - '{}'", path));
+            throw ApiKeyException("Failed to write API key to config file");
         }
     }
 

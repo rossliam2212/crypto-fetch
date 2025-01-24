@@ -41,7 +41,7 @@ namespace cf {
                 responses.emplace_back(responseData);
             }
         } catch (const std::exception& ex) {
-            throw std::runtime_error(fmt::format("Response parse error - {}", ex.what()));
+            throw CryptoFetchException(fmt::format("Response parse error - {}", ex.what()));
         }
     }
 

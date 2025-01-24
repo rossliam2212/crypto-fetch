@@ -5,12 +5,12 @@ std::string loadApiKey() {
     const auto apiKeyFilePath = std::string{getenv(cf::HOME_ENV_VAR) + cf::API_KEY_ROOT + cf::API_KEY};
     std::ifstream ifs{apiKeyFilePath, std::fstream::in};
     if (!ifs.is_open()) {
-        throw std::runtime_error(fmt::format("Config file does not exist. See --set-apikey"));
+        throw cf::ApiKeyException(fmt::format("Config file does not exist. See --set-apikey"));
     }
     std::string apiKey;
     std::getline(ifs, apiKey);
     if (apiKey.empty()) {
-       throw std::runtime_error(fmt::format("Failed to read api key from file - {}", apiKeyFilePath));
+       throw cf::ApiKeyException(fmt::format("Failed to read api key from file - {}", apiKeyFilePath));
     }
 
     ifs.close();
@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
 
         const auto response = client.fetchLatestPrice(parser);
         cf::Formatter::display(response);
-    } catch (const std::exception& ex) {
+    } catch (const cf::CryptoFetchException& ex) {
         fmt::println("[ERROR] Failed to fetch price. Cause: '{}'.", ex.what());
     }
 }

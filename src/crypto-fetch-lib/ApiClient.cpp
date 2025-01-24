@@ -34,7 +34,7 @@ namespace cf {
 
             return ApiResponse{parser, data};
         } catch (const std::exception& ex) {
-            throw std::runtime_error(fmt::format("Fetching error - {}", ex.what()));
+            throw CryptoFetchException(fmt::format("API fetch error - {}", ex.what()));
         }
     }
 

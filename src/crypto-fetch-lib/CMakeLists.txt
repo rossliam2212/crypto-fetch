@@ -5,6 +5,8 @@ set(LIB_HEADERS
 		../../include/cf/CommandLineParser.hpp
 		../../include/cf/Formatter.hpp
 		../../include/cf/FileUtils.hpp
+		../../include/cf/exceptions/CryptoFetchException.hpp
+		../../include/cf/exceptions/ApiKeyException.hpp
 )
 
 set(LIB_SOURCES
@@ -13,6 +15,8 @@ set(LIB_SOURCES
         CommandLineParser.cpp
         Formatter.cpp
 		FileUtils.cpp
+		exceptions/CryptoFetchException.cpp
+		exceptions/ApiKeyException.cpp
 )
 
 set(LIB_INCLUDES

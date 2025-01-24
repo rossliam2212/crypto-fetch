@@ -15,6 +15,8 @@
 #include "config.hpp"
 #include "Defines.hpp"
 #include "FileUtils.hpp"
+#include "exceptions/CryptoFetchException.hpp"
+#include "exceptions/ApiKeyException.hpp"
 
 namespace cf {
     class CommandLineParser {
