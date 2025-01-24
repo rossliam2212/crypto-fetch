@@ -1,8 +1,10 @@
 set(LIB_HEADERS
-    ../../include/cf/ApiClient.hpp
-	../../include/cf/ApiResponse.hpp
-	../../include/cf/CommandLineParser.hpp
-	../../include/cf/Formatter.hpp
+		../../include/cf/Defines.hpp
+		../../include/cf/ApiClient.hpp
+		../../include/cf/ApiResponse.hpp
+		../../include/cf/CommandLineParser.hpp
+		../../include/cf/Formatter.hpp
+		../../include/cf/FileUtils.hpp
 )
 
 set(LIB_SOURCES
@@ -10,6 +12,7 @@ set(LIB_SOURCES
         ApiResponse.cpp
         CommandLineParser.cpp
         Formatter.cpp
+		FileUtils.cpp
 )
 
 set(LIB_INCLUDES

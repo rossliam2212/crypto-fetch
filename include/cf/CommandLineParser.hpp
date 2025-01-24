@@ -10,13 +10,11 @@
 #include <cxxopts.hpp>
 #include <fmt/core.h>
 #include <fstream>
-#include <filesystem>
 #include <algorithm>
 
 #include "config.hpp"
 #include "Defines.hpp"
-
-namespace fs = std::filesystem;
+#include "FileUtils.hpp"
 
 namespace cf {
     class CommandLineParser {
@@ -34,15 +32,12 @@ namespace cf {
         cxxopts::ParseResult result;
 
         std::string getSuppliedApiKey() const;
-        void handleSetApiKey();
+        void handleSetApiKey() const;
 
         static void handleVersion();
         static void handleGetApiKey();
-        static bool checkApiKeyFile();
-        static bool fileExists(std::string_view path);
-        static bool rootDirExists();
-        static void createRootDir();
         static void writeApiKeyToFile(const std::string& path, const std::string& apiKey);
+        static std::string getRootDirectoryPath();
         static std::string getFullApiKeyFilePath();
     };
 } // namespace cf

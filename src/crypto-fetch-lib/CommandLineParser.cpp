@@ -79,7 +79,9 @@ namespace cf {
     }
 
     void CommandLineParser::handleGetApiKey() {
-        if (checkApiKeyFile()) {
+        const std::string apiKeyPath = getFullApiKeyFilePath();
+
+        if (utils::fileExists(apiKeyPath)) {
             fmt::println("[INFO] API key located in file - '{}'", getFullApiKeyFilePath());
             std::exit(EXIT_SUCCESS);
         }
@@ -87,39 +89,26 @@ namespace cf {
         std::exit(EXIT_SUCCESS);
     }
 
-    void CommandLineParser::handleSetApiKey() {
+    void CommandLineParser::handleSetApiKey() const {
         const std::string apiKeyFilePath = getFullApiKeyFilePath();
-        if (checkApiKeyFile()) {
+
+        if (utils::fileExists(apiKeyFilePath)) {
             fmt::println("[INFO] API key already set in file - '{}'", apiKeyFilePath);
             std::exit(EXIT_SUCCESS);
         }
 
-        if (rootDirExists()) {
-            writeApiKeyToFile(apiKeyFilePath, getSuppliedApiKey());
+        const std::string rootDirectory = getRootDirectoryPath();
+        const std::string suppliedApiKey = getSuppliedApiKey();
+        if (utils::directoryExists(rootDirectory)) {
+            writeApiKeyToFile(apiKeyFilePath, suppliedApiKey);
             std::exit(EXIT_SUCCESS);
         }
-        createRootDir();
-        writeApiKeyToFile(apiKeyFilePath, getSuppliedApiKey());
-        std::exit(EXIT_SUCCESS);
-    }
 
-    bool CommandLineParser::checkApiKeyFile() {
-        const std::string fallbackFilePath = getFullApiKeyFilePath();
-        return fileExists(fallbackFilePath);
-    }
-
-    bool CommandLineParser::rootDirExists() {
-        const std::string rootDir = fmt::format("{}{}", getenv(HOME_ENV_VAR), API_KEY_ROOT);
-        return fs::exists(rootDir) && fs::is_directory(rootDir);
-    }
-
-    bool CommandLineParser::fileExists(const std::string_view path) {
-        return fs::exists(path);
-    }
-
-    void CommandLineParser::createRootDir() {
-        const std::string rootDir = fmt::format("{}{}", getenv(HOME_ENV_VAR), API_KEY_ROOT);
-        fs::create_directories(rootDir);
+        if (utils::createDirectory(rootDirectory)) {
+            writeApiKeyToFile(apiKeyFilePath, suppliedApiKey);
+            std::exit(EXIT_SUCCESS);
+        }
+        throw std::runtime_error(fmt::format("Failed to create root directory - '{}'", rootDirectory));
     }
 
     void CommandLineParser::writeApiKeyToFile(const std::string& path, const std::string& apiKey) {
@@ -131,6 +120,10 @@ namespace cf {
         } else {
             throw std::runtime_error(fmt::format("Failed to write API key to file - '{}'", path));
         }
+    }
+
+    std::string CommandLineParser::getRootDirectoryPath() {
+        return fmt::format("{}{}", getenv(HOME_ENV_VAR), API_KEY_ROOT);;
     }
 
     std::string CommandLineParser::getFullApiKeyFilePath() {
